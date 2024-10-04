@@ -9,7 +9,7 @@ enum AcceptedDocumentType {
 enum FieldType {
     TEXT,
     CHECKBOX,
-    SIGNBOX,
+    SIGNATURE,
     OTHER
 }
 

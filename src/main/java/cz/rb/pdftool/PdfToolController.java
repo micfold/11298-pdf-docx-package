@@ -34,7 +34,7 @@ class PdfToolController {
     }
 
     @GetMapping("/{documentType}/fields")
-    public Map<String, FormField> getFormFields(@PathVariable String documentType) throws IOException {
+    public Map<String, FormField> getFormFields(@PathVariable String documentType) {
         logger.debug("Received request to get form fields for document type: {}", documentType);
 
         AcceptedDocumentType docType;
@@ -56,7 +56,7 @@ class PdfToolController {
         }
     }
 
-    @GetMapping("/{documentType}/document")
+    @GetMapping("/{documentType}/sourceDocument")
     public ResponseEntity<Resource> getDocument(@PathVariable String documentType) {
         logger.debug("Received request to get document for document type: {}", documentType);
         AcceptedDocumentType docType;
