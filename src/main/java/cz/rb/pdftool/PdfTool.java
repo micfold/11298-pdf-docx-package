@@ -1,9 +1,11 @@
 package cz.rb.pdftool;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 enum AcceptedDocumentType {
     w8ben,
     w9,
-    agreementTermination
+    agreementTermination;
 }
 
 enum FieldType {
@@ -14,7 +16,12 @@ enum FieldType {
 }
 
 class FormField {
+    @JsonProperty("name")
     String name;
+    @JsonProperty("type")
     FieldType type;
+    @JsonProperty("value")
+    String value;
+    @JsonProperty("checked")
+    Boolean checked;
 }
-

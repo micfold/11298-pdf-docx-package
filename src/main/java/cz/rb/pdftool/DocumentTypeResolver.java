@@ -13,13 +13,13 @@ public class DocumentTypeResolver {
     @Value("${pdf.base.path}")
     private String basePath;
 
-    @Value("${sourcePath.w8ben}")
+    @Value("${file.w8ben}")
     private String w8benPath;
 
-    @Value("${sourcePath.w9}")
+    @Value("${file.w9}")
     private String w9Path;
 
-    @Value("${sourcePath.agreementTermination}")
+    @Value("${file.agreementTermination}")
     private String agreementTerminationPath;
 
     private static final Map<String, String> documentTypeToSourcePathMap = new HashMap<>();

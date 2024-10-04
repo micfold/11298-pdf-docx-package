@@ -1,7 +1,6 @@
 package cz.rb.pdftool;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.interactive.form.*;
 
 import org.slf4j.Logger;
@@ -13,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+//import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -36,8 +36,7 @@ class PdfToolService {
 
         Map<String, FormField> formFields = new HashMap<>();
         try (PDDocument document = PDDocument.load(resource.getInputStream())) {
-            PDDocumentCatalog catalog = document.getDocumentCatalog();
-            PDAcroForm acroForm = catalog.getAcroForm();
+            PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
             if (acroForm != null) {
                 processFields(acroForm.getFields(), formFields);
             }
@@ -51,7 +50,9 @@ class PdfToolService {
     public void processFields(List<PDField> fields, Map<String, FormField> formFields) {
         for (PDField field : fields) {
             FormField formField = new FormField();
-            formField.name = field.getFullyQualifiedName();
+
+            String originalFieldName = field.getFullyQualifiedName();
+            formField.name = originalFieldName;
 
             if (field instanceof PDNonTerminalField) {
                 // Process child fields recursively
@@ -62,15 +63,64 @@ class PdfToolService {
             // Set the field type based on the specific field class
             if (field instanceof PDTextField) {
                 formField.type = FieldType.TEXT;
+                formField.value = field.getValueAsString();
             } else if (field instanceof PDCheckBox) {
                 formField.type = FieldType.CHECKBOX;
+                PDCheckBox checkBox = (PDCheckBox) field;
+                formField.checked = checkBox.isChecked();
             } else if (field instanceof PDSignatureField) {
                 formField.type = FieldType.SIGNATURE;
+                PDSignatureField signatureField = (PDSignatureField) field;
+                formField.value = signatureField.getValueAsString();
             } else {
                 formField.type = FieldType.OTHER;
             }
 
-            formFields.put(formField.name, formField);
+            String mappedName = getMappedName(originalFieldName);
+            if (mappedName != null) {
+                formField.name = mappedName;
+            }
+
+            formFields.put(originalFieldName, formField);
         }
     }
+
+    // Helper method to get the mapped name from the enum
+    private String getMappedName(String fullyQualifiedName) {
+        for (PdfFieldMapping.w8benFieldMapping mapping : PdfFieldMapping.w8benFieldMapping.values()) {
+            if (mapping.getFormFieldName().equals(fullyQualifiedName)) {
+                return mapping.getApiName();
+            }
+        }
+        return null;
+    }
+
+
+
+
+//    public byte[] fillAndSavePdf(String sourcePath, Map<String, String> formData) throws IOException {
+//        Resource resource = resourceLoader.getResource("classpath:" + sourcePath);
+//        if (!resource.exists()) {
+//            logger.error("Resource does not exist at path: {}", sourcePath);
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        try (PDDocument document = PDDocument.load(resource.getInputStream())) {
+//            PDAcroForm acroForm = document.getDocumentCatalog().getAcroForm();
+//            if (acroForm != null) {
+//                for (Map.Entry<String, String> entry : formData.entrySet()) {
+//                    PdfFieldMapping mapping = PdfFieldMapping.valueOf(entry.getKey());
+//                    if (mapping != null) {
+//                        PDField field = acroForm.getField(mapping.getFormFieldName());
+//                        if (field != null) {
+//                            field.setValue(entry.getValue());
+//                        }
+//                    }
+//                }
+//            }
+//            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//            document.save(outputStream);
+//            return outputStream.toByteArray();
+//        }
+//    }
 }
