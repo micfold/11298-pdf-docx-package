@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 enum AcceptedDocumentType {
     w8ben,
     w9,
-    agreementTermination;
+    agreementTermination
 }
 
 enum FieldType {
@@ -25,3 +25,4 @@ class FormField {
     @JsonProperty("checked")
     Boolean checked;
 }
+
