@@ -1,5 +1,6 @@
 package cz.rb.pdftool;
 
+import cz.rb.pdftool.model.FormField;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

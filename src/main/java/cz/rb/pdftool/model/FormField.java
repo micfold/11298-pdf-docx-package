@@ -1,0 +1,14 @@
+package cz.rb.pdftool.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class FormField {
+    @JsonProperty("name")
+    public String name;
+    @JsonProperty("type")
+    public FieldType type;
+    @JsonProperty("value")
+    public String value;
+    @JsonProperty("checked")
+    public Boolean checked;
+}

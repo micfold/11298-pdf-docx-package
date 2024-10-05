@@ -1,4 +1,4 @@
-package cz.rb.pdftool;
+package cz.rb.pdftool.model;
 
 public class PdfFieldDTO {
     String name;

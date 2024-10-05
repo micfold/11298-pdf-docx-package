@@ -2,6 +2,9 @@ package cz.rb.pdftool;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.rb.pdftool.model.AcceptedDocumentType;
+import cz.rb.pdftool.model.FormField;
+import cz.rb.pdftool.model.PdfFieldDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-
 // TODO: we should split these routes up to internal & external endpoints
 @RequestMapping("/api/v1/tools")
 class PdfToolController {
@@ -57,7 +59,7 @@ class PdfToolController {
         logger.debug("Resolved source path: {}", sourcePath);
 
         try {
-            return pdfToolService.getFormFields(sourcePath);
+            return pdfToolService.getFormFields(sourcePath, docType);
         } catch (IOException e) {
             logger.error("Error loading form fields from source path: {}", sourcePath, e);
             throw new ResponseStatusException(
@@ -128,7 +130,7 @@ class PdfToolController {
         logger.debug("Resolved source path: {}", sourcePath);
 
         try {
-            byte[] filledPdfDocument = pdfToolService.fillPdf(sourcePath, fieldValues);
+            byte[] filledPdfDocument = pdfToolService.fillPdf(sourcePath, fieldValues, docType);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(

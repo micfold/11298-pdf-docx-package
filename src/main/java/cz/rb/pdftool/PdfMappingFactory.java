@@ -1,0 +1,25 @@
+package cz.rb.pdftool;
+
+import cz.rb.pdftool.mapping.*;
+import cz.rb.pdftool.model.AcceptedDocumentType;
+
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
+@Component
+public class PdfMappingFactory {
+    private final Map<AcceptedDocumentType, Class<? extends Enum<? extends PdfDocumentMapping>>> mappings;
+
+    public PdfMappingFactory() {
+        mappings = new HashMap<>();
+        mappings.put(AcceptedDocumentType.w8ben, W8benFieldMapping.class);
+        //mappings.put(AcceptedDocumentType.w9, W9FieldMapping.class);
+    }
+
+    public Class<? extends Enum<? extends PdfDocumentMapping>> getMappingForDocumentType(AcceptedDocumentType documentType) {
+        return mappings.get(documentType);
+    }
+}
