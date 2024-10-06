@@ -1,24 +1,35 @@
+/*
+ * Copyright (c) 2024 Blockz Inc. All rights reserved.
+ *
+ * Created on 6.10.2024 by Michael Foldyna
+ *
+ */
+
 package cz.rb.pdftool;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.rb.pdftool.model.FormField;
-import org.junit.jupiter.api.BeforeEach;
+import cz.rb.pdftool.model.PdfFieldDTO;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
+
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 
@@ -34,33 +45,42 @@ class PdfToolControllerTest {
     @MockBean
     private DocumentTypeResolver documentTypeResolver;
 
-    @BeforeEach
-    void setUp(WebApplicationContext webApplicationContext) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
-    void testGetFormFields_ValidDocumentType() throws Exception {
+    void getFormFields_ShouldReturnFields() throws Exception {
+        // Arrange
         Map<String, FormField> formFields = new HashMap<>();
-        when(documentTypeResolver.resolveSourcePath(anyString())).thenReturn("valid/path/to/document.pdf");
-        when(pdfToolService.getFormFields(anyString())).thenReturn(formFields);
+        FormField field = new FormField();
+        field.name = "testField";
+        formFields.put("testField", field);
 
+        when(pdfToolService.getFormFields(any(), any())).thenReturn(formFields);
+
+        // Act & Assert
         mockMvc.perform(get("/api/v1/tools/w8ben/fields"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_PDF))
+                .andExpect(jsonPath("$.testField.name").value("testField"));
     }
 
     @Test
-    void testGetFormFields_InvalidDocumentType() throws Exception {
-        mockMvc.perform(get("/api/v1/tools/invalidType/fields"))
-                .andExpect(status().isNotFound());
-    }
+    void renderPdfDocument_ShouldReturnPdf() throws Exception {
+        // Arrange
+        List<PdfFieldDTO> fieldValues = List.of(
+                new PdfFieldDTO("testField", "testValue", null)
+        );
+        byte[] pdfBytes = new byte[] {1, 2, 3, 4};
 
-    @Test
-    void testGetFormFields_InvalidSourcePath() throws Exception {
+        when(pdfToolService.fillPdf(any(), eq(fieldValues), any())).thenReturn(pdfBytes);
 
-        when(documentTypeResolver.resolveSourcePath(anyString())).thenReturn("invalid/path/to/document.pdf");
-        when(pdfToolService.getFormFields(anyString())).thenThrow(new IOException("Invalid source path"));
-        mockMvc.perform(get("/api/v1/tools/w8ben/fields"))
-                .andExpect(status().isInternalServerError());
+        // Act & Assert
+        mockMvc.perform(post("/api/v1/tools/w8ben/render")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(fieldValues)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_PDF))
+                .andExpect(header().string("Content-Disposition", "attachment; filename=\"w8ben_filled.pdf\""));
     }
 }

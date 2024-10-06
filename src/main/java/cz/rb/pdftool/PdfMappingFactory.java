@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2024 Blockz Inc. All rights reserved.
+ *
+ * Created on 6.10.2024 by Michael Foldyna
+ *
+ */
+
 package cz.rb.pdftool;
 
 import cz.rb.pdftool.mapping.*;
@@ -16,7 +23,6 @@ public class PdfMappingFactory {
     public PdfMappingFactory() {
         mappings = new HashMap<>();
         mappings.put(AcceptedDocumentType.w8ben, W8benFieldMapping.class);
-        //mappings.put(AcceptedDocumentType.w9, W9FieldMapping.class);
     }
 
     public Class<? extends Enum<? extends PdfDocumentMapping>> getMappingForDocumentType(AcceptedDocumentType documentType) {

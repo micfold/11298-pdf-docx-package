@@ -20,12 +20,31 @@
         <maven.compiler.target>18</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <pdfbox.version>2.0.32</pdfbox.version>
+        <junit-jupiter-api>5.8.2</junit-jupiter-api>
+        <junit-jupiter-engine>5.8.2</junit-jupiter-engine>
+        <mockito-junit-jupiter>4.5.1</mockito-junit-jupiter>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- JUnit API 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter-api}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUnit Engine 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter-engine}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Apache PDF Box -->
@@ -41,6 +60,15 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- Mockitio JUnit Jupiter -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito-junit-jupiter}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Mockitio Core -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
