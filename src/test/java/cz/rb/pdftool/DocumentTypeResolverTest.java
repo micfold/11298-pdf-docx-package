@@ -23,7 +23,6 @@ class DocumentTypeResolverTest {
         ReflectionTestUtils.setField(documentTypeResolver, "basePath", "/base/path/");
         ReflectionTestUtils.setField(documentTypeResolver, "w8benPath", "w8ben.pdf");
         ReflectionTestUtils.setField(documentTypeResolver, "w9Path", "w9.pdf");
-        ReflectionTestUtils.setField(documentTypeResolver, "agreementTerminationPath", "termination.pdf");
         documentTypeResolver.init();
     }
 

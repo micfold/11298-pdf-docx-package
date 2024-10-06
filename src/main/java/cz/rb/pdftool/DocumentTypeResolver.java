@@ -26,16 +26,12 @@ public class DocumentTypeResolver {
     @Value("${file.w9}")
     private String w9Path;
 
-    @Value("${file.agreementTermination}")
-    private String agreementTerminationPath;
-
     private static final Map<String, String> documentTypeToSourcePathMap = new HashMap<>();
 
     @PostConstruct
     public void init() {
         documentTypeToSourcePathMap.put("w8ben", basePath + w8benPath);
         documentTypeToSourcePathMap.put("w9", basePath + w9Path);
-        documentTypeToSourcePathMap.put("agreementTermination", basePath + agreementTerminationPath);
     }
 
     public String resolveSourcePath(String documentType) {

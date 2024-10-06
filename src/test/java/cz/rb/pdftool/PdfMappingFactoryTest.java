@@ -28,10 +28,9 @@ class PdfMappingFactoryTest {
 
     @Test
     void getMappingForDocumentType_ShouldReturnNull_ForUnsupportedType() {
-        // Act
-        Class<?> mappingClass = pdfMappingFactory.getMappingForDocumentType(AcceptedDocumentType.w9);
-
-        // Assert
-        assertNull(mappingClass);
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            pdfMappingFactory.getMappingForDocumentType(AcceptedDocumentType.valueOf("w10"));
+        });
     }
 }

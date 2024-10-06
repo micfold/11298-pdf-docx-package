@@ -23,6 +23,7 @@ public class PdfMappingFactory {
     public PdfMappingFactory() {
         mappings = new HashMap<>();
         mappings.put(AcceptedDocumentType.w8ben, W8benFieldMapping.class);
+        mappings.put(AcceptedDocumentType.w9, W9FieldMapping.class);
     }
 
     public Class<? extends Enum<? extends PdfDocumentMapping>> getMappingForDocumentType(AcceptedDocumentType documentType) {
