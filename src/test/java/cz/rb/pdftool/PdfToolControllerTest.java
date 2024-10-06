@@ -61,7 +61,7 @@ class PdfToolControllerTest {
         // Act & Assert
         mockMvc.perform(get("/api/v1/tools/w8ben/fields"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_PDF))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.testField.name").value("testField"));
     }
 
